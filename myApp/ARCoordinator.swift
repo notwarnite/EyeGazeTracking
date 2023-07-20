@@ -4,6 +4,7 @@
 
 
 // reference: https://developer.apple.com/documentation/arkit/arfaceanchor/2968192-lookatpoint
+// reference: https://github.com/virakri/eye-tracking-ios-prototype/tree/master (for x and y coordinate conversions)
 
 import SwiftUI
 import ARKit
