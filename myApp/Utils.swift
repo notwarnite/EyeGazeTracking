@@ -8,17 +8,12 @@ struct Device {
     static var screenSize: CGSize {
         let screenWidthPixel: CGFloat = UIScreen.main.nativeBounds.width
         let screenHeightPixel: CGFloat = UIScreen.main.nativeBounds.height
-        
-        let ppi: CGFloat = UIScreen.main.scale * 264 // iPad Pro 11-inch PPI value: 264 
-        
-        let a_ratio = (2388 / 1668) / 0.0623908297
-        let b_ratio = (1688 / 2388) / 0.135096943231532
-        
-        return CGSize(width: (screenWidthPixel / ppi) / a_ratio, height: (screenHeightPixel / ppi) / b_ratio)
+    
+        return CGSize(width: (screenWidthPixel / UIScreen.main.scale * 264) / 22.91309857, height: (screenHeightPixel / UIScreen.main.scale * 264) / 5.23100994)
     }
     
-    static var frameSize: CGSize {  // iPad Pro 11-inch 834, 1194
-        return CGSize(width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.height - 40)
+    static var frameSize: CGSize {
+        return CGSize(width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.height - 40) // status bar height: 40 points
     }
 }
 

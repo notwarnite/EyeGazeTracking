@@ -25,15 +25,16 @@ class ARCoordinator: NSObject, ARSessionDelegate {
         let lookAtPointInWorld = faceAnchor.transform * simd_float4(lookAtPoint, 1)
         let transformedLookAtPoint = simd_mul(simd_inverse(cameraTransform), lookAtPointInWorld)
         
-        let screenX = transformedLookAtPoint.y / (Float(Device.screenSize.width) / 2) * Float(Device.frameSize.width)
-        let screenY = transformedLookAtPoint.x / (Float(Device.screenSize.height) / 2) * Float(Device.frameSize.height)
+        let screenXPosition = transformedLookAtPoint.y / (Float(Device.screenSize.width) / 2) * Float(Device.frameSize.width)
+        let screenYPosition = transformedLookAtPoint.x / (Float(Device.screenSize.height) / 2) * Float(Device.frameSize.height)
         
         // Clamps the screen coordinates to predefined ranges to prevent out-of-bounds values. (so circle doesn't go out of frame)
-        let clampedX = CGFloat(screenX).clamped(to: Ranges.widthRange)
-        let clampedY = CGFloat(screenY).clamped(to: Ranges.heightRange)
+        let clampedX = CGFloat(screenXPosition).clamped(to: Ranges.widthRange)
+        let clampedY = CGFloat(screenYPosition).clamped(to: Ranges.heightRange)
         
         let focusPoint = CGPoint(x: clampedX, y: clampedY)
         
+        // calculations for sliding average of eye gaze points
         gazeCoordinatesBuffer.append(focusPoint)
         
         if gazeCoordinatesBuffer.count > windowSize {
