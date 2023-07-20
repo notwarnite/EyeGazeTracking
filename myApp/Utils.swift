@@ -1,8 +1,13 @@
+//  Utils.swift
+//
+//  Created by RITWIK SINGH
+
+
 // reference: https://github.com/ukitomato/EyeTrackKit/blob/master/Sources/EyeTrackKit/Model/Device.swift
 
 import SwiftUI
 
-// A utility struct to get the screen size and ranges of a specific device.
+// A custom utility struct to get the screen size and ranges of a specific device.
 
 struct Device {
     static var screenSize: CGSize {
