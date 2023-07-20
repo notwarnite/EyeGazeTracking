@@ -6,16 +6,17 @@ struct CustomARViewContainer: UIViewRepresentable {
     @Binding var lookAtPoint: CGPoint?
     @Binding var isEyeTrackingStarted: Bool
     
+    // ARFaceTrackingConfiguration allows the app to track the user's face.
+    private let configuration = ARFaceTrackingConfiguration()
+    
     func makeUIView(context: Context) -> ARView {
         let arView = ARView(frame: .zero)
         arView.session.delegate = context.coordinator
-        let configuration = ARFaceTrackingConfiguration()
         return arView
     }
     
     func updateUIView(_ uiView: ARView, context: Context) {
         if isEyeTrackingStarted {
-            let configuration = ARFaceTrackingConfiguration()
             uiView.session.run(configuration)
         } else {
             uiView.session.pause()

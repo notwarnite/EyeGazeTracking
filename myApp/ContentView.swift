@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var lookAtPoint: CGPoint?
-    @State private var isEyeTrackingStarted = false
+    @State var lookAtPoint: CGPoint?
+    @State var isEyeTrackingStarted = false
     
     var body: some View {
         ZStack {
@@ -46,24 +46,24 @@ struct ContentView: View {
                             .cornerRadius(10)
                     })
                 }.padding()
-                
-                Spacer()
             }
             
-            if let position = lookAtPoint {
+            if let position = lookAtPoint, position != .zero {
                 Circle()
                     .fill(Color.blue)
                     .frame(width: 40, height: 40)
-                    .position(x: position.x, y: position.y)
+                    .position(x: position.x,
+                              y: position.y)
             }
         }
     }
     
-    private func startEyeTracking() {
+    
+    func startEyeTracking() {
         isEyeTrackingStarted = true
     }
     
-    private func stopEyeTracking() {
+    func stopEyeTracking() {
         lookAtPoint = nil
         
         DispatchQueue.main.async {

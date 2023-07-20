@@ -1,7 +1,12 @@
+// reference: https://developer.apple.com/documentation/arkit/arfaceanchor/2968192-lookatpoint
+
+import SwiftUI
 import ARKit
 
 class ARCoordinator: NSObject, ARSessionDelegate {
     @Binding var lookAtPoint: CGPoint?
+
+    // Keeps track of recent focus points for calculating sliding average for smoother translation
     private var gazeCoordinatesBuffer: [CGPoint] = []
     private let windowSize = 4
     
@@ -16,12 +21,14 @@ class ARCoordinator: NSObject, ARSessionDelegate {
         let lookAtPoint = faceAnchor.lookAtPoint
         guard let cameraTransform = session.currentFrame?.camera.transform else { return }
         
+        // Transforms the lookAtPoint from face anchor's local coordinate space to world coordinate space.
         let lookAtPointInWorld = faceAnchor.transform * simd_float4(lookAtPoint, 1)
         let transformedLookAtPoint = simd_mul(simd_inverse(cameraTransform), lookAtPointInWorld)
         
         let screenX = transformedLookAtPoint.y / (Float(Device.screenSize.width) / 2) * Float(Device.frameSize.width)
         let screenY = transformedLookAtPoint.x / (Float(Device.screenSize.height) / 2) * Float(Device.frameSize.height)
         
+        // Clamps the screen coordinates to predefined ranges to prevent out-of-bounds values. (so circle doesn't go out of frame)
         let clampedX = CGFloat(screenX).clamped(to: Ranges.widthRange)
         let clampedY = CGFloat(screenY).clamped(to: Ranges.heightRange)
         
@@ -33,10 +40,12 @@ class ARCoordinator: NSObject, ARSessionDelegate {
             gazeCoordinatesBuffer.removeFirst()
         }
         
-        let averageX = gazeCoordinatesBuffer.reduce(0) { $0 + $1.x } / CGFloat(gazeCoordinatesBuffer.count)
-        let averageY = gazeCoordinatesBuffer.reduce(0) { $0 + $1.y } / CGFloat(gazeCoordinatesBuffer.count)
+        let averageX = gazeCoordinatesBuffer.reduce(0) {$0 + $1.x} / CGFloat(gazeCoordinatesBuffer.count)
+        
+        let averageY = gazeCoordinatesBuffer.reduce(0) {$0 + $1.y} / CGFloat(gazeCoordinatesBuffer.count)
         
         let smoothFocusPoint = CGPoint(x: averageX, y: averageY)
+        
         DispatchQueue.main.async {
             self.lookAtPoint = smoothFocusPoint
         }
